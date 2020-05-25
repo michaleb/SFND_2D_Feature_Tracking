@@ -24,9 +24,16 @@ int main(int argc, const char *argv[])
 
     /* INIT VARIABLES AND DATA STRUCTURES */
 
+    fstream results;
+    results.open("../results/results.csv", fstream::out | fstream::app);
+
+    results <<"imageIndex" << ","  << "detectorType" << ","<< "descriptorType" <<
+     ","<< "detectorTime" << ","<< "descriptorTime"<< ","<< "detectectedKeypoints" <<
+      ","<< "matchedKeypoints"<<","<< "totalTime"<<","<< endl;
+
     // data location
     string dataPath = "../";
-
+    
     // camera
     string imgBasePath = dataPath + "images/";
     string imgPrefix = "KITTI/2011_09_26/image_00/data/000000"; // left camera, color
@@ -47,6 +54,7 @@ int main(int argc, const char *argv[])
         /* LOAD IMAGE INTO BUFFER */
 
         // assemble filenames for current index
+        
         ostringstream imgNumber;
         imgNumber << setfill('0') << setw(imgFillWidth) << imgStartIndex + imgIndex;
         string imgFullFilename = imgBasePath + imgPrefix + imgNumber.str() + imgFileType;
@@ -61,9 +69,15 @@ int main(int argc, const char *argv[])
 
         // push image into data frame buffer
         DataFrame frame;
+        
+        if (dataBuffer.size() == dataBufferSize)
+        {
+            dataBuffer.erase(dataBuffer.begin());
+        }   
+        
         frame.cameraImg = imgGray;
-        dataBuffer.push_back(frame);
-
+        dataBuffer.push_back(frame);    
+        
         //// EOF STUDENT ASSIGNMENT
         cout << "#1 : LOAD IMAGE INTO BUFFER done" << endl;
 
@@ -71,33 +85,44 @@ int main(int argc, const char *argv[])
 
         // extract 2D keypoints from current image
         vector<cv::KeyPoint> keypoints; // create empty feature list for current image
-        string detectorType = "SHITOMASI";
+        string detectorType = "SIFT"; //SHITOMASI, HARRIS, FAST, BRISK, ORB, AKAZE, SIFT
 
         //// STUDENT ASSIGNMENT
         //// TASK MP.2 -> add the following keypoint detectors in file matching2D.cpp and enable string-based selection based on detectorType
         //// -> HARRIS, FAST, BRISK, ORB, AKAZE, SIFT
 
+        double detectorTime;
+
         if (detectorType.compare("SHITOMASI") == 0)
         {
-            detKeypointsShiTomasi(keypoints, imgGray, false);
+            detKeypointsShiTomasi(keypoints, imgGray, detectorTime, false);
         }
-        else
+        else if (detectorType.compare("HARRIS") == 0)
         {
-            //...
+            detKeypointsHarris(keypoints, imgGray, detectorTime, false);
         }
+        else detKeypointsModern(keypoints, imgGray, detectorType, detectorTime, false);
         //// EOF STUDENT ASSIGNMENT
 
         //// STUDENT ASSIGNMENT
         //// TASK MP.3 -> only keep keypoints on the preceding vehicle
 
         // only keep keypoints on the preceding vehicle
+        vector<cv::KeyPoint> newkeyPoints;
         bool bFocusOnVehicle = true;
         cv::Rect vehicleRect(535, 180, 180, 150);
         if (bFocusOnVehicle)
         {
-            // ...
+            for(auto roiKeypoint: keypoints)
+            {
+                if (vehicleRect.contains(roiKeypoint.pt))
+                {
+                    newkeyPoints.push_back(roiKeypoint); 
+                }
+            } 
+            keypoints = newkeyPoints;
         }
-
+        
         //// EOF STUDENT ASSIGNMENT
 
         // optional : limit number of keypoints (helpful for debugging and learning)
@@ -124,9 +149,11 @@ int main(int argc, const char *argv[])
         //// TASK MP.4 -> add the following descriptors in file matching2D.cpp and enable string-based selection based on descriptorType
         //// -> BRIEF, ORB, FREAK, AKAZE, SIFT
 
+        double descriptorTime;
         cv::Mat descriptors;
-        string descriptorType = "BRISK"; // BRIEF, ORB, FREAK, AKAZE, SIFT
-        descKeypoints((dataBuffer.end() - 1)->keypoints, (dataBuffer.end() - 1)->cameraImg, descriptors, descriptorType);
+        string descriptorType = "SIFT"; // BRISK, BRIEF, ORB, FREAK, AKAZE, SIFT
+        descKeypoints((dataBuffer.end() - 1)->keypoints, (dataBuffer.end() - 1)->cameraImg, descriptors, descriptorType, descriptorTime);
+        
         //// EOF STUDENT ASSIGNMENT
 
         // push descriptors for current frame to end of data buffer
@@ -141,8 +168,8 @@ int main(int argc, const char *argv[])
 
             vector<cv::DMatch> matches;
             string matcherType = "MAT_BF";        // MAT_BF, MAT_FLANN
-            string descriptorType = "DES_BINARY"; // DES_BINARY, DES_HOG
-            string selectorType = "SEL_NN";       // SEL_NN, SEL_KNN
+            string descriptorSubtype = "DES_HOG"; // DES_BINARY, DES_HOG
+            string selectorType = "SEL_KNN";       // SEL_NN, SEL_KNN
 
             //// STUDENT ASSIGNMENT
             //// TASK MP.5 -> add FLANN matching in file matching2D.cpp
@@ -150,8 +177,12 @@ int main(int argc, const char *argv[])
 
             matchDescriptors((dataBuffer.end() - 2)->keypoints, (dataBuffer.end() - 1)->keypoints,
                              (dataBuffer.end() - 2)->descriptors, (dataBuffer.end() - 1)->descriptors,
-                             matches, descriptorType, matcherType, selectorType);
+                             matches, descriptorSubtype, matcherType, selectorType);
 
+            results <<imgIndex <<"," << detectorType << ","<< descriptorType << ","<< detectorTime << 
+            ","<< descriptorTime<< ","<< keypoints.size() << ","<< matches.size()<<
+            ","<< detectorTime + descriptorTime<<","<< endl;
+            
             //// EOF STUDENT ASSIGNMENT
 
             // store matches in current data frame
