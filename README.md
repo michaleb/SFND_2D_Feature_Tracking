@@ -108,8 +108,10 @@ Only keypoints on the car directly in front of the camera fall within the region
 ```        
 
 ## 3. Descriptors
+They are used to uniquely identify the salient points detected in the camera image.
 
 ### 3a. Keypoint Descriptors
+The descriptors with their varied call functions are found in the OpenCV library. This was implemented at `line 60 of matching2D_Student.cpp code`
 
 ```
 // select appropriate descriptor
@@ -144,6 +146,7 @@ Only keypoints on the car directly in front of the camera fall within the region
 ```
 
 ### 3b. Discriptor Matching
+Selecting FLANN speeds up the nearest neighbor search by incorporating a KD-Tree reduces search time. This was implemented at`line 19 of matching2D_Student.cpp code`
 
 ```
     else if (matcherType.compare("MAT_FLANN") == 0)
@@ -164,6 +167,27 @@ Only keypoints on the car directly in front of the camera fall within the region
         //cout << " (KNN) with n=" << knn_matches.size() << endl;
 ```
 
+
+### 3c. Discriptor Distance Ratio
+A distance ratio of 0.8 was used to select suitable descriptor matches. Any descriptor pair distance ratio less than this value was considered a match. This was implemented at `line # 36 in matching2D_Student.cpp` code:
+
+```
+        // Filter matches using descriptor distance ratio test
+        double minDescDistRatio = 0.8;
+        for (auto it = knn_matches.begin(); it != knn_matches.end(); ++it)
+        {
+            if ((*it)[0].distance < minDescDistRatio * (*it)[1].distance)
+            {
+                matches.push_back((*it)[0]);
+            }
+        }
+        cout << "# keypoints removed = " << knn_matches.size() - matches.size() << endl;
+ ```
+
+
+
+### 4a. Performance Evaluation I
+The number of keypoints on the preceding vehicle for all detectors are shown below:
 
 | Detector Type|Descriptor Type|		Img1|	Img2|	Img3|	Img4|	Img5|	Img6|	Img7|	Img8|	Img9 |
 |:------------|:---------------|:------:|:-----:|:----:|:-----:|:-----:|:----:|:-----:|:-----:|:-----:|
@@ -216,25 +240,21 @@ Only keypoints on the car directly in front of the camera fall within the region
 
 
 
+### 4b. Performance Evaluation II & III
+The number of keypoints detected per combined detector and descriptor and the total time for keypoint detection and descriptor extraction are shown below.
 
-### 3c. Discriptor Distance Ratio
-A distance ratio of 0.8 was used to select suitable descriptor matches. Any descriptor pair distance ratio less than this value was considered a match. This was implemented at `line # 36 in matching2D_Student.cpp` code:
+Based on the data shown below the top 3 detector-descriptor combination for keypoint detection on cars are:
 
-```
-        // Filter matches using descriptor distance ratio test
-        double minDescDistRatio = 0.8;
-        for (auto it = knn_matches.begin(); it != knn_matches.end(); ++it)
-        {
-            if ((*it)[0].distance < minDescDistRatio * (*it)[1].distance)
-            {
-                matches.push_back((*it)[0]);
-            }
-        }
-        cout << "# keypoints removed = " << knn_matches.size() - matches.size() << endl;
- ```
+|#|Detector Type |Descriptor Type| Total Time (ms)|
+|:--:|:--------:|:---------:|:-----:|
+|1|FAST| BRIEF| 0.00243|
+|2|FAST|BRISK |0.00343 |
+|3|FAST    |ORB  | 0.00688 |
+|                          |
+|                          |
 
 
-
+### Table of Performance values
 
 
 |detectorType|descriptorType  |imageIndex      |detectorTime|descriptorTime|detectectedKeypoints|matchedKeypoints|totalTime|FIELD9|Accuracy|
