@@ -29,9 +29,23 @@ The idea of the camera course is to build a collision detection system - that's 
 3. Compile: `cmake .. && make`
 4. Run it: `./2D_feature_tracking`.
 
-# Implementing the code
+
+[//]: # (Image References)
+
+[image1]: /images/Shi-Tomasi-neighborhood.png "Shi-Tomasi descriptor matches"
+[image2]: /images/Harris-neighborhood.png "Harris descriptor matches"
+[image3]: /images/FAST-neighborhood.png "FAST descriptor matches"
+[image4]: /images/BRISK-neighborhood.png "BRISK descriptor matches"
+[image5]: /images/AKAZE-neighborhood.png "AKAZE descriptor matches"
+[image6]: /images/SIFT-neighborhood.png "SIFT descriptor matches"
+[image7]: /images/ORB-neighborhood.png "ORB descriptor matches"
+
+
+## Implementing the code
 
 ## 1. Data Buffer Optimization
+A memory buffer was used to reduce to 2 the maximum number of images stored in memory for processing. Code was impemented at `line # 76 in MidTermProject_Camera_student.cpp`
+ 
 
 ```
         DataFrame frame;
@@ -46,7 +60,7 @@ The idea of the camera course is to build a collision detection system - that's 
 ```
 
 ## 2. Keypoints
-Keypoints are salient points or points on interest in an image that can be used to track an object in the image through subsequent frames.
+Keypoints are salient points or points on interest in an image that are used to track an object in the image through subsequent frames.
 ### 2a. Keypoint Detection
 This is the process of detecting points of interest in an image where there are noticeable changes in features of the image.
 
@@ -63,16 +77,14 @@ The keypoints shown in the table are those that the ego car's camera detected on
 |AKAZE         |  157  | 161  |  155  |  163   | 164  |  173  | 175  |  177  |  179|
 |SIFT          |  132 |  124  |  137  |  134  |  140  |  137 |  148  |  159  |  137|
 
-[//]: # (The number of keypoints detected by each detector type per image)
+   ##### Table 1 - The number of keypoints detected per detector type  
 
 The Harris and Shi-Tomasi detectors have fixed block sizes of 2 and 4 respectively. For this implementation of the detectors no overlap was permitted between features and there was no variation in their neighborhood sizes which were determined by size of each block (2x2),(4x4). The FAST detector also had a fixed size neighborhood with some overlap.
 
 The BRISK, ORB, AKAZE and SIFT detectors had varied neghborhood sizes, BRISK and ORB had small to very large neighborhood sizes appearing as clusters at times, while AKAZE and SIFT had small to medium neighborhood sizes. All four detectors had a fairly even distribution of the various size neighborhoods.
 
-
-
-
-
+![alt text][image1]     ![alt text][image2]     ![alt text][image3]   ![alt text][image4]   ![alt text][image5]
+![alt text][image6]     ![alt text][image7]
 
 
 ### 2b. Keypoint Removal
@@ -206,7 +218,7 @@ Only keypoints on the car directly in front of the camera fall within the region
 
 
 ### 3c. Discriptor Distance Ratio
-A distance ratio of 0.8 was used to select suitable descriptor matches. Any descriptor pair distance ratio less than this value was considered a match. This was implemented at line # 36 in `matching2D_Student.cpp` code:
+A distance ratio of 0.8 was used to select suitable descriptor matches. Any descriptor pair distance ratio less than this value was considered a match. This was implemented at `line # 36 in matching2D_Student.cpp` code:
 
 ```
         // Filter matches using descriptor distance ratio test
