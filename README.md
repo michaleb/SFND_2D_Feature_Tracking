@@ -32,13 +32,13 @@ The idea of the camera course is to build a collision detection system - that's 
 
 [//]: # (Image References)
 
-[image1]: /images/Shi-Tomasi-neighborhood.png "Shi-Tomasi descriptor matches"
-[image2]: /images/Harris-neighborhood.png "Harris descriptor matches"
-[image3]: /images/FAST-neighborhood.png "FAST descriptor matches"
-[image4]: /images/BRISK-neighborhood.png "BRISK descriptor matches"
-[image5]: /images/AKAZE-neighborhood.png "AKAZE descriptor matches"
-[image6]: /images/SIFT-neighborhood.png "SIFT descriptor matches"
-[image7]: /images/ORB-neighborhood.png "ORB descriptor matches"
+[image1]: /images/Shi-Tomasi-neighborhood.png "Shi-Tomasi detector matches"
+[image2]: /images/Harris-neighborhood.png "Harris detector matches"
+[image3]: /images/FAST-neighborhood.png "FAST detector matches"
+[image4]: /images/BRISK-neighborhood.png "BRISK detector matches"
+[image5]: /images/AKAZE-neighborhood.png "AKAZE detector matches"
+[image6]: /images/SIFT-neighborhood.png "SIFT detector matches"
+[image7]: /images/ORB-neighborhood.png "ORB detector matches"
 
 
 ## Implementing the code
