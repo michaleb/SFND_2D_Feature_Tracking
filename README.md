@@ -2,12 +2,12 @@
 
 <img src="images/keyimages.png" width="820" height="248" />
 
-The idea of the camera course is to build a collision detection system - that's the overall goal for the Final Project. As a preparation for this, you will now build the feature tracking part and test various detector / descriptor combinations to see which ones perform best. This mid-term project consists of four parts:
+The overall goal is to build a collision detection system using Lidar points and camera images.As a preliminary step a feature tracking component is required and for accuracy it is tested with various detector / descriptor combinations to see which ones perform best. The following steps outline the order in which this preceding goal is acheived.
 
-* First, you will focus on loading images, setting up data structures and putting everything into a ring buffer to optimize memory load. 
-* Then, you will integrate several keypoint detectors such as HARRIS, FAST, BRISK and SIFT and compare them with regard to number of keypoints and speed. 
-* In the next part, you will then focus on descriptor extraction and matching using brute force and also the FLANN approach we discussed in the previous lesson. 
-* In the last part, once the code framework is complete, you will test the various algorithms in different combinations and compare them with regard to some performance measures. 
+* To optimize memory usage a ring buffer is utilized for loading images. 
+* Keypoint detectors (e.g. HARRIS, FAST, BRISK and SIFT) are next implemented and compared with regard to number of keypoints detected and speed. 
+* Descriptor extraction and matching using brute force, FLANN is used to identify corresponding keypoints in the subsequent frame. 
+* All feasible combinations of detector/discriptor are tested and compared to select best performers. 
 
 
 ## Current local configuration
