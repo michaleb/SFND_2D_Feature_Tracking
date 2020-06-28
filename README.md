@@ -2,7 +2,7 @@
 
 <img src="images/keyimages.png" width="820" height="248" />
 
-The overall goal is to build a collision detection system using Lidar points and camera images.As a preliminary step a feature tracking component is required and for accuracy it is tested with various detector / descriptor combinations to see which ones perform best. The following steps outline the order in which this preceding goal is acheived.
+The overall goal is to build a collision detection system using Lidar points and camera images. As a preliminary step a feature tracking component is required and for accuracy it is tested with various detector / descriptor combinations to see which ones perform best. The following steps outline the order in which this preceding goal is acheived.
 
 * To optimize memory usage a ring buffer is utilized for loading images. 
 * Keypoint detectors (e.g. HARRIS, FAST, BRISK and SIFT) are next implemented and compared with regard to number of keypoints detected and speed. 
