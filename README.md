@@ -64,7 +64,7 @@ Keypoints are salient points or points on interest in an image that are used to 
 ### 2a. Keypoint Detection
 This is the process of detecting points of interest in an image where there are noticeable changes in features of the image.
 
-### Detectected Keypoints
+### Detected Keypoints
 The keypoints shown in the table are those that the ego car's camera detected on the preceding car directly in front of it.
 
 |Detector Type    |Img1|Img2|Img3|Img4|Img5|Img6|Img7|Img8|Img9|      
