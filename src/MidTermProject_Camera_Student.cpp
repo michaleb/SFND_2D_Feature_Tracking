@@ -22,14 +22,17 @@ using namespace std;
 int main(int argc, const char *argv[])
 {
 
-    /* INIT VARIABLES AND DATA STRUCTURES */
+    /*Setup to write performance values to file*/
 
-    fstream results;
-    results.open("../results/results.csv", fstream::out | fstream::app);
+    /*fstream results;
+    results.open("../results/results_totalTime.csv", fstream::out | fstream::app);
 
     results <<"imageIndex" << ","  << "detectorType" << ","<< "descriptorType" <<
      ","<< "detectorTime" << ","<< "descriptorTime"<< ","<< "detectectedKeypoints" <<
       ","<< "matchedKeypoints"<<","<< "totalTime"<<","<< endl;
+    */
+       
+    /* INIT VARIABLES AND DATA STRUCTURES */
 
     // data location
     string dataPath = "../";
@@ -85,7 +88,7 @@ int main(int argc, const char *argv[])
 
         // extract 2D keypoints from current image
         vector<cv::KeyPoint> keypoints; // create empty feature list for current image
-        string detectorType = "SIFT"; //SHITOMASI, HARRIS, FAST, BRISK, ORB, AKAZE, SIFT
+        string detectorType = "FAST"; //SHITOMASI, HARRIS, FAST, BRISK, ORB, AKAZE, SIFT
 
         //// STUDENT ASSIGNMENT
         //// TASK MP.2 -> add the following keypoint detectors in file matching2D.cpp and enable string-based selection based on detectorType
@@ -151,7 +154,7 @@ int main(int argc, const char *argv[])
 
         double descriptorTime;
         cv::Mat descriptors;
-        string descriptorType = "SIFT"; // BRISK, BRIEF, ORB, FREAK, AKAZE, SIFT
+        string descriptorType = "BRIEF"; // BRISK, BRIEF, ORB, FREAK, AKAZE, SIFT
         descKeypoints((dataBuffer.end() - 1)->keypoints, (dataBuffer.end() - 1)->cameraImg, descriptors, descriptorType, descriptorTime);
         
         //// EOF STUDENT ASSIGNMENT
@@ -167,8 +170,8 @@ int main(int argc, const char *argv[])
             /* MATCH KEYPOINT DESCRIPTORS */
 
             vector<cv::DMatch> matches;
-            string matcherType = "MAT_BF";        // MAT_BF, MAT_FLANN
-            string descriptorSubtype = "DES_HOG"; // DES_BINARY, DES_HOG
+            string matcherType = "MAT_BF";       // MAT_BF, MAT_FLANN
+            string descriptorSubtype = "DES_BINARY"; // DES_BINARY, DES_HOG
             string selectorType = "SEL_KNN";       // SEL_NN, SEL_KNN
 
             //// STUDENT ASSIGNMENT
@@ -179,10 +182,10 @@ int main(int argc, const char *argv[])
                              (dataBuffer.end() - 2)->descriptors, (dataBuffer.end() - 1)->descriptors,
                              matches, descriptorSubtype, matcherType, selectorType);
 
-            results <<imgIndex <<"," << detectorType << ","<< descriptorType << ","<< detectorTime << 
+            /*results <<imgIndex <<"," << detectorType << ","<< descriptorType << ","<< detectorTime << 
             ","<< descriptorTime<< ","<< keypoints.size() << ","<< matches.size()<<
             ","<< detectorTime + descriptorTime<<","<< endl;
-            
+            */
             //// EOF STUDENT ASSIGNMENT
 
             // store matches in current data frame
@@ -204,6 +207,7 @@ int main(int argc, const char *argv[])
                 string windowName = "Matching keypoints between two camera images";
                 cv::namedWindow(windowName, 7);
                 cv::imshow(windowName, matchImg);
+                cv::imwrite("../images/keyimages.png", matchImg);
                 cout << "Press key to continue to next image" << endl;
                 cv::waitKey(0); // wait for key to be pressed
             }
