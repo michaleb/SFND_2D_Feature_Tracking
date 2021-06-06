@@ -42,9 +42,13 @@ void matchDescriptors(std::vector<cv::KeyPoint> &kPtsSource, std::vector<cv::Key
 
         // TODO : filter matches using descriptor distance ratio test
         double minDescDistRatio = 0.8;
+        double k = 0.01;
         for (auto it = knn_matches.begin(); it != knn_matches.end(); ++it)
         {
-            if ((*it)[0].distance < minDescDistRatio * (*it)[1].distance)
+            //float xVal = kPtsSource[(*it)[0].queryIdx].pt.x - kPtsRef[(*it)[1].trainIdx].pt.x;
+            float yVal = abs(kPtsSource[(*it)[0].queryIdx].pt.y - kPtsRef[(*it)[1].trainIdx].pt.y);
+            
+            if (((*it)[0].distance < minDescDistRatio * (*it)[1].distance) && (yVal < k*minDescDistRatio))
             {
                 matches.push_back((*it)[0]);
             }
@@ -77,7 +81,6 @@ void descKeypoints(vector<cv::KeyPoint> &keypoints, cv::Mat &img, cv::Mat &descr
     }
     else if (descriptorType.compare("ORB") == 0)
     {
-        //int WTA_K;
         extractor = cv::ORB::create();
     }
     else if (descriptorType.compare("AKAZE") == 0)
